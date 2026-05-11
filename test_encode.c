@@ -2,6 +2,7 @@
 #include "encode.h"
 #include "decode.h"
 #include "types.h"
+#include "common.h"
 
 int main(int argc ,char *argv[])
 {
