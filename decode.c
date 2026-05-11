@@ -207,6 +207,7 @@ d_Status decode_secret_file_data(char *data, int data_len, DecodeInfo *decInfo)
     if(decInfo->fptr_secret != NULL)
     {
         fwrite(data, data_len-1,1,decInfo->fptr_secret);
+        fclose(decInfo->fptr_secret); 
     }
     
     printf("DEBUG: Current file position = %ld\n", ftell(decInfo->fptr_stego_image));
@@ -214,6 +215,49 @@ d_Status decode_secret_file_data(char *data, int data_len, DecodeInfo *decInfo)
     return d_success;
 }
 
+d_Status display_decoded_message(DecodeInfo *decInfo)
+{
+    char choice, ch;
+
+    printf("Do you want to view the decoded message?\n");
+
+    while (1)
+    {
+        printf("Press (y/n): ");
+        scanf(" %c", &choice);
+
+        choice = tolower(choice);
+
+        if (choice == 'y')
+        {
+            FILE *fp = fopen(decInfo->secret_fname, "r");
+            if (fp == NULL)
+            {
+                printf("ERROR: Unable to open file\n");
+                return d_failure;
+            }
+
+            printf("\nDecoded message:\n");
+            while (fread(&ch, 1, 1, fp) == 1)
+            {
+                putchar(ch);
+            }
+            printf("\n");
+
+            fclose(fp);
+            return d_success;
+        }
+        else if (choice == 'n')
+        {
+            printf("Message not displayed.\n");
+            return d_success;
+        }
+        else
+        {
+            printf("Invalid option. Try again.\n");
+        }
+    }
+}
 
 d_Status do_decoding(DecodeInfo *decInfo)
 {
@@ -242,6 +286,7 @@ d_Status do_decoding(DecodeInfo *decInfo)
                         if (decode_secret_file_data(secret_data, file_size, decInfo) == d_success)
                         {
                             printf("INFO : Decoding completed successfully\n");
+                            display_decoded_message(decInfo);
                         }
                         else
                         {
@@ -281,3 +326,4 @@ d_Status do_decoding(DecodeInfo *decInfo)
 
     return d_success;
 }
+
