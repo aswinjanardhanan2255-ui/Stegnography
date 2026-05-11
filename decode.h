@@ -75,7 +75,7 @@ char decode_bit_from_lsb(char *secret_buffer);
 //decode size from image
 d_Status decode_size_from_image(int *size, DecodeInfo *decInfo);
 
-
-
+//dispaly the decoded message
+d_Status display_decoded_message(DecodeInfo *decInfo);
 
  #endif
